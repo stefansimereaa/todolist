@@ -1,5 +1,11 @@
 import './bootstrap';
 
+import './sidebar-menu/sidebar-menu';
+
+import.meta.glob([
+    '../img/**'
+])
+
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
