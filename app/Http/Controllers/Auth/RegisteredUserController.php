@@ -28,65 +28,65 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'email' => 'required', 'email', 'max:255',
-            'password' => 'required', 'min:8',
-        ], [
-            'email.required' => 'Il campo email è obbligatorio.',
-            'email.email' => 'Inserisci un indirizzo email valido.',
-            'email.max' => 'Il campo email non può superare :max caratteri.',
-            'password.required' => 'Il campo password è obbligatorio.',
-            'password.min' => 'La password deve essere lunga almeno :min caratteri.',
-        ]);
-
-
-        $user = User::create([
-            // 'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
-    }
-    // public function loginOrRegister(Request $request): RedirectResponse
+    // public function store(Request $request): RedirectResponse
     // {
     //     $request->validate([
-    //         'email' => ['required', 'email', 'max:255'],
-    //         'password' => ['required', Rules\Password::defaults()],
+    //         'email' => 'required', 'email', 'max:255',
+    //         'password' => 'required', 'min:8',
     //     ], [
     //         'email.required' => 'Il campo email è obbligatorio.',
     //         'email.email' => 'Inserisci un indirizzo email valido.',
     //         'email.max' => 'Il campo email non può superare :max caratteri.',
     //         'password.required' => 'Il campo password è obbligatorio.',
-    //         'password.*' => 'La password fornita non è valida.',
+    //         'password.min' => 'La password deve essere lunga almeno :min caratteri.',
     //     ]);
 
-    //     $user = User::where('email', $request->email)->first();
 
-    //     if ($user) {
-    //         // If the user exists, attempt to login
-    //         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-    //             return redirect()->intended(RouteServiceProvider::HOME);
-    //         } else {
-    //             // If login attempt fails, redirect back with error
-    //             return redirect()->back()->with('error', 'Invalid credentials.');
-    //         }
-    //     } else {
-    //         // If the user does not exist, create a new one and login
-    //         $newUser = User::create([
-    //             'email' => $request->email,
-    //             'password' => Hash::make($request->password),
-    //         ]);
+    //     $user = User::create([
+    //         // 'name' => $request->name,
+    //         'email' => $request->email,
+    //         'password' => Hash::make($request->password),
+    //     ]);
 
-    //         Auth::login($newUser);
+    //     event(new Registered($user));
 
-    //         return redirect()->intended(RouteServiceProvider::HOME);
-    //     }
+    //     Auth::login($user);
+
+    //     return redirect(RouteServiceProvider::HOME);
     // }
+    public function loginOrRegister(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', Rules\Password::defaults()],
+        ], [
+            'email.required' => 'Il campo email è obbligatorio.',
+            'email.email' => 'Inserisci un indirizzo email valido.',
+            'email.max' => 'Il campo email non può superare :max caratteri.',
+            'password.required' => 'Il campo password è obbligatorio.',
+            'password.*' => 'La password fornita non è valida.',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            // If the user exists, attempt to login
+            if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                return redirect()->intended(RouteServiceProvider::HOME);
+            } else {
+                // If login attempt fails, redirect back with error
+                return redirect()->back()->with('error', 'Invalid credentials.');
+            }
+        } else {
+            // If the user does not exist, create a new one and login
+            $newUser = User::create([
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            Auth::login($newUser);
+
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
+    }
 }

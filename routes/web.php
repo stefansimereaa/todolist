@@ -26,8 +26,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-// // Route per il login e la registrazione
-// Route::post('/login-or-register', [RegisteredUserController::class, 'loginOrRegister'])->name('loginOrRegister');
+// Route per il login e la registrazione
+Route::post('/login-or-register', [RegisteredUserController::class, 'loginOrRegister'])->name('loginOrRegister');
 
 // Google Login
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('auth.google');
